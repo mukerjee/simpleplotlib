@@ -1,7 +1,5 @@
 from setuptools import setup
 
-REQUIREMENTS = ['matplotlib>=2.0.0', 'numpy', 'dotmap']
-
 setup(
     name='simpleplotlib',
     packages=['simpleplotlib'],
@@ -23,5 +21,9 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Topic :: Scientific/Engineering'
     ],
-    install_requires=REQUIREMENTS
+    install_requires=[
+        'matplotlib>=2.0.0',
+        'numpy',
+        'dotmap',
+    ]
 )
