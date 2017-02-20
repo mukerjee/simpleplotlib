@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 REQUIREMENTS = ['matplotlib>=2.0.0', 'numpy', 'dotmap']
 
