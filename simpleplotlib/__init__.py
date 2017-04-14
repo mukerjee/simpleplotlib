@@ -25,6 +25,7 @@ default_options.x.label.color = 'gray'
 default_options.x.ticks.major.show = True
 default_options.x.ticks.major.options.colors = 'gray'
 default_options.x.ticks.minor.options.colors = 'gray'
+default_options.x.ticks.minor.count = 5
 default_options.x.grid.options.linestyle = 'dotted'
 default_options.x.grid.options.linewidth = 0.5
 default_options.x.grid.options.which = 'both'
