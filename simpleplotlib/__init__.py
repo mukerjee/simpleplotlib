@@ -17,14 +17,15 @@ default_options.rcParams['pdf.fonttype'] = 42
 default_options.rcParams['ps.fonttype'] = 42
 default_options.rcParams['font.size'] = 24
 default_options.rcParams['font.family'] = 'Myriad Pro'
-default_options.rcParams['text.color'] = 'gray'
+default_options.rcParams['text.color'] = 'black'
 
-default_options.x.axes.show = False
+default_options.x.axis.show = False
+default_options.x.axis.color = 'gray'
 default_options.x.margin = 0.05
-default_options.x.label.color = 'gray'
+default_options.x.label.color = 'black'
 default_options.x.ticks.major.show = True
-default_options.x.ticks.major.options.colors = 'gray'
-default_options.x.ticks.minor.options.colors = 'gray'
+default_options.x.ticks.major.options.colors = 'black'
+default_options.x.ticks.minor.options.colors = 'black'
 default_options.x.ticks.minor.count = 5
 default_options.x.grid.options.linestyle = 'dotted'
 default_options.x.grid.options.linewidth = 0.5
@@ -35,7 +36,7 @@ default_options.y2 = default_options.x
 
 default_options.legend.text.options.color = 'black'
 
-default_options.broken.gap_position = 'bottom'
+default_options.broken.gap_positions = ['bottom']
 
 default_options.bar.width = 0.8
 
@@ -45,6 +46,7 @@ default_options.bar_labels.format_string = '%d'
 
 default_options.vertical_lines.options.linestyle = '--'
 default_options.horizontal_lines.options.linestyle = '--'
+default_options.annotation_lines.options.linestyle = '--'
 
 default_options.text.options.ha = 'center'
 default_options.text.options.va = 'center'
@@ -141,14 +143,27 @@ def apply_options_to_axis(axis, data, options):
     axis.axes.set_axisbelow(True)
     axis.axes.margins(**{t: options.margin})
 
-    if not options.axis.show:
+    if t == 'x':
+        axis.axes.spines['top'].set_visible(False)
+        axis.axes.spines['bottom'].set_visible(False)
+    else:
+        axis.axes.spines['left'].set_visible(False)
+        axis.axes.spines['right'].set_visible(False)
+
+    if options.axis.show:
         if t == 'x':
-            axis.axes.spines['top'].set_visible(False)
-            axis.axes.spines['bottom'].set_visible(False)
+            if options.position and options.position == 'top':
+                sp = axis.axes.spines['top']
+            else:
+                sp = axis.axes.spines['bottom']
         else:
-            axis.axes.spines['left'].set_visible(False)
-            axis.axes.spines['right'].set_visible(False)
-    
+            if options.position and options.position == 'right':
+                sp = axis.axes.spines['right']
+            else:
+                sp = axis.axes.spines['left']
+        sp.set_visible(True)
+        sp.set_color(options.axis.color)
+
     if options.grid.show:
         axis.grid(**options.grid.options.toDict())
 
@@ -275,26 +290,31 @@ def plot_broken(x, y, y2, options):
     plot_ax(ax2, x, y, y2, options)
  
     # draw in 'gap' markers
-    d = .015
+    d = .03  # .015
     trans = ax.transScale + ax.transLimits
-    d2 = {'middle': [0.5, 0.5], 'bottom': [0, 0], 'top': [1, 1],
-          'zero': trans.transform([0, 0])}
-    kwargs = dict(transform=ax.transAxes, color='gray', clip_on=False)
+    d_dict = {'middle': [0.5, 0.5], 'bottom': [0, 0], 'top': [1, 1],
+              'zero': trans.transform([0, 0])}
+    kwargs = dict(transform=ax.transAxes, color='black', clip_on=False)
     if options.broken.yskip:
-        d2 = d2[options.broken.gap_position][0]
         k1, k2 = options.broken.subplot.gridspec_kw['height_ratios']
         k = k1 / float(k2)
-        ax.plot((d2-d, d2+d), (-d/k, +d/k), **kwargs)
-        kwargs.update(transform=ax2.transAxes)  # switch to the bottom axes
-        ax2.plot((d2-d, d2+d), (1-d, 1+d), **kwargs)
+        for p in options.broken.gap_positions:
+            d2 = d_dict[p][0]
+            kwargs.update(transform=ax.transAxes)
+            ax.plot((d2-d, d2+d), (-d/k, +d/k), **kwargs)
+            # switch to the bottom axes
+            kwargs.update(transform=ax2.transAxes)
+            ax2.plot((d2-d, d2+d), (1-d, 1+d), **kwargs)
     else:
-        d2 = d2[options.broken.gap_position][1]
         k1, k2 = options.broken.subplot.gridspec_kw['width_ratios']
         k = k1 / float(k2)
-        ax.plot((1-d/k, 1+d/k), (d2-d, d2+d), **kwargs)
-        kwargs.update(transform=ax2.transAxes)  # switch to the right axes
-        ax2.plot((-d, +d), (d2-d, d2+d), **kwargs)
-
+        for p in options.broken.gap_positions:
+            d2 = d_dict[p][1]
+            kwargs.update(transform=ax.transAxes)
+            ax.plot((1-d/k, 1+d/k), (d2-d, d2+d), **kwargs)
+            # switch to the right axes
+            kwargs.update(transform=ax2.transAxes)
+            ax2.plot((-d, +d), (d2-d, d2+d), **kwargs)
     return axes
 
 
@@ -314,11 +334,24 @@ def plot(x, y, my_options={}, y2=None):
         axes = [ax]
         plot_ax(ax, x, y, y2, options)
 
+    plt.tight_layout(pad=0)
+
+    if options.x.axis.stretch:
+        box = ax.get_position()
+        ax.set_position([box.x0, box.y0,
+                         box.width * options.x.axis.stretch, box.height])
+
+    if options.y.axis.stretch:
+        box = ax.get_position()
+        ax.set_position([box.x0, box.y0,
+                         box.width, box.height * options.y.axis.stretch])
+
     if options.legend.options.labels:
         handles, labels = axes[0].get_legend_handles_labels()
         labels, handles = zip(*sorted(zip(labels, handles),
                                       key=lambda t: t[0]))
-        l = axes[-1].legend(handles=handles, **options.legend.options.toDict())
+        l = axes[-1].legend(handles=handles,
+                            **options.legend.options.toDict())
         for t in l.get_texts():
             t.update(options.legend.text.options.toDict())
 
@@ -335,6 +368,9 @@ def plot(x, y, my_options={}, y2=None):
                      transform=axes[0].transAxes,
                      **options.text.options.toDict())
 
-    plt.tight_layout(pad=0)
+    for i in options.annotation_lines.lines:
+        axes[0].annotate('', xy=i[0], xytext=i[1], arrowprops=dict(
+            arrowstyle='-', **options.annotation_lines.options.toDict()))
+
     print options['output_fn']
     plt.savefig(options['output_fn'], bbox_inches='tight', pad_inches=0)
