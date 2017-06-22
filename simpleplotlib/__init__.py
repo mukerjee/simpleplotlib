@@ -364,9 +364,9 @@ def plot(x, y, my_options={}, y2=None):
             axes[0].axhline(l, **options.horizontal_lines.options.toDict())
             
     for i in xrange(len(options.text.labels)):
-        axes[1].text(*options.text.positions[i], s=options.text.labels[i],
-                     transform=axes[0].transAxes,
-                     **options.text.options.toDict())
+        axes[-1].text(*options.text.positions[i], s=options.text.labels[i],
+                      transform=axes[0].transAxes,
+                      **options.text.options.toDict())
 
     for i in options.annotation_lines.lines:
         axes[0].annotate('', xy=i[0], xytext=i[1], arrowprops=dict(
