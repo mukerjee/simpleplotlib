@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from copy import deepcopy
+from cycler import cycler
 from matplotlib.ticker import AutoMinorLocator
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, mark_inset
 from dotmap import DotMap
