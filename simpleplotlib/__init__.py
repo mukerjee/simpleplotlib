@@ -106,6 +106,8 @@ def autolabel(ax, rects, bar_labels):
 
 def plot_data(ax, x, y, options, series_options):
     global SERIES_NUMBER
+    if 'yerr' in options.series_options[0].toDict():
+        options.plot_type = 'ERROR'
     if options.plot_type == 'LINE':
         for i in xrange(len(x)):
             if len(x[i]) > 1:
@@ -118,6 +120,13 @@ def plot_data(ax, x, y, options, series_options):
                     del options.series_options[i].markersize
                 ax.scatter(x[i], y[i], label=str(SERIES_NUMBER),
                            **series_options[i].toDict())
+            SERIES_NUMBER += 1
+
+    if options.plot_type == 'ERROR':
+        for i in xrange(len(x)):
+            if len(x[i]) > 1:
+                ax.errorbar(x[i], y[i], label=str(SERIES_NUMBER),
+                            **series_options[i].toDict())
             SERIES_NUMBER += 1
 
     if options.plot_type == 'SCATTER':
