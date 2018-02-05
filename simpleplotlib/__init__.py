@@ -107,6 +107,14 @@ def autolabel(ax, rects, bar_labels):
 
 def plot_data(ax, x, y, options, series_options):
     global SERIES_NUMBER
+    if 'color_groups' in options.series.toDict():
+        cm = plt.get_cmap('tab20c')
+        max_color = 4
+        current = [0, 0, 0, 0, 0]
+        for i in xrange(len(x)):
+            group = options.series.color_groups[i]
+            series_options[i].color = cm(group * max_color + current[group])
+            current[group] = (current[group] + 1) % max_color
     if 'yerr' in options.series_options[0].toDict():
         options.plot_type = 'ERROR'
     if options.plot_type == 'LINE':
