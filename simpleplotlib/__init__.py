@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 import numpy as np
 
 from copy import deepcopy
@@ -381,6 +382,17 @@ def plot(x, y, my_options={}, y2=None):
             ax.set_prop_cycle(cycler('color',
                                      [cm(1.*i/20) for i in range(20)]))
 
+        if 'styles' in options.legend.toDict() and \
+           'labels' in options.legend.options.toDict():
+            dummy_lines = []
+            for i, style in enumerate(options.legend.styles):
+                if 'color' not in style:
+                    style.color = 'C%d' % i
+                dummy_lines.append(mlines.Line2D([], [], **style.toDict()))
+            l = ax.legend(handles=dummy_lines,
+                          **options.legend.options.toDict())
+            for t in l.get_texts():
+                t.update(options.legend.text.options.toDict())
         plot_ax(ax, x, y, y2, options)
 
     plt.tight_layout(pad=0)
@@ -430,7 +442,8 @@ def plot(x, y, my_options={}, y2=None):
         ax.set_position([box.x0, box.y0,
                          box.width, box.height * options.y.axis.stretch])
 
-    if options.legend.options.labels:
+    if 'styles' not in options.legend.toDict() and \
+       'labels' not in options.legend.options.toDict():
         handles, labels = axes[0].get_legend_handles_labels()
         labels, handles = zip(*sorted(zip(labels, handles),
                                       key=lambda t: int(t[0])))
