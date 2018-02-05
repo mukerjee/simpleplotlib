@@ -419,7 +419,7 @@ def plot(x, y, my_options={}, y2=None):
     if options.legend.options.labels:
         handles, labels = axes[0].get_legend_handles_labels()
         labels, handles = zip(*sorted(zip(labels, handles),
-                                      key=lambda t: t[0]))
+                                      key=lambda t: int(t[0])))
         l = axes[-1].legend(handles=handles,
                             **options.legend.options.toDict())
         for t in l.get_texts():
