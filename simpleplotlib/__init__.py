@@ -353,7 +353,8 @@ def plot_broken(x, y, y2, options):
 
 
 def plot(x, y, my_options={}, y2=None):
-    global RENDERER
+    global RENDERER, SERIES_NUMBER
+    SERIES_NUMBER = 0
     
     options = default_options.copy()
     merge_DotMap(options, my_options)
