@@ -445,7 +445,7 @@ def plot(x, y, my_options={}, y2=None):
                          box.width, box.height * options.y.axis.stretch])
 
     if 'styles' not in options.legend.toDict() and \
-       'labels' not in options.legend.options.toDict():
+       'labels' in options.legend.options.toDict():
         handles, labels = axes[0].get_legend_handles_labels()
         labels, handles = zip(*sorted(zip(labels, handles),
                                       key=lambda t: int(t[0])))
