@@ -367,6 +367,11 @@ def plot(x, y, my_options={}, y2=None):
         f, ax = plt.subplots()
         RENDERER = f.canvas.get_renderer()
         axes = [ax]
+        if len(x) > 10:
+            cm = plt.get_cmap('tab20')
+            ax.set_prop_cycle(cycler('color',
+                                     [cm(1.*i/20) for i in range(20)]))
+
         plot_ax(ax, x, y, y2, options)
 
     plt.tight_layout(pad=0)
