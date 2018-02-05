@@ -59,6 +59,11 @@ default_options.inset.options.border_color = 'black'
 default_options.inset.options.corners = [1, 3]
 default_options.inset.marker.options.color = 'gray'
 
+default_options.vertical_shaded.options.alpha = 0.5
+default_options.vertical_shaded.options.color = 'red'
+default_options.horizontal_shaded = default_options.vertical_shaded
+
+
 def merge_DotMap(a, b):
     for k, v in b.items():
         if isinstance(v, DotMap) and k in a:
@@ -400,9 +405,17 @@ def plot(x, y, my_options={}, y2=None):
         for l in options.vertical_lines.lines:
             axes[0].axvline(l, **options.vertical_lines.options.toDict())
 
+    if options.vertical_shaded.limits:
+        for l, r in options.vertical_shaded.limits:
+            axes[0].axvspan(l, r, **options.vertical_shaded.options.toDict())
+
     if options.horizontal_lines.lines:
         for l in options.horizontal_lines.lines:
             axes[0].axhline(l, **options.horizontal_lines.options.toDict())
+
+    if options.horizontal_shaded.limits:
+        for l, r in options.horizontal_shaded.limits:
+            axes[0].axhspan(l, r, **options.horizontal_shaded.options.toDict())
             
     for i in xrange(len(options.text.labels)):
         axes[-1].text(*options.text.positions[i], s=options.text.labels[i],
