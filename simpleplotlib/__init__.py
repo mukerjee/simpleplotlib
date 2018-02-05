@@ -434,6 +434,11 @@ def plot(x, y, my_options={}, y2=None):
         handles, labels = axes[0].get_legend_handles_labels()
         labels, handles = zip(*sorted(zip(labels, handles),
                                       key=lambda t: int(t[0])))
+        if options.legend.order:
+            handles = [h
+                       for _, h in sorted(zip(options.legend.order, handles))]
+            labels = [h
+                      for _, h in sorted(zip(options.legend.order, labels))]
         l = axes[-1].legend(handles=handles,
                             **options.legend.options.toDict())
         for t in l.get_texts():
