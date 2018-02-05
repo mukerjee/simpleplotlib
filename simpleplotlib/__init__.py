@@ -256,6 +256,16 @@ def plot_ax(ax, x, y, y2, options):
     apply_options_to_axis(ax.xaxis, x, options.x)
     apply_options_to_axis(ax.yaxis, y, options.y)
 
+    if options.y.label_offset:
+        (yx, yy) = ax.yaxis.get_label().get_position()
+        ax.yaxis.set_label_coords(yx + options.y.label_offset[0],
+                                  yy + options.y.label_offset[1])
+
+    if options.x.label_offset:
+        (xx, xy) = ax.xaxis.get_label().get_position()
+        ax.xaxis.set_label_coords(xx + options.x.label_offset[0],
+                                  xy + options.x.label_offset[1])
+
     if y2:
         ax2 = ax.twinx()
         plot_data(ax2, x, y2, options, options.series2_options)
