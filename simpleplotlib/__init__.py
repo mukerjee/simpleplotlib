@@ -120,6 +120,8 @@ def plot_data(ax, x, y, options, series_options):
         options.plot_type = 'ERROR'
     if options.plot_type == 'LINE':
         for i in xrange(len(x)):
+            if 'color' not in series_options[i].toDict():
+                series_options[i].color = 'C%d' % i
             if len(x[i]) > 1:
                 ax.plot(x[i], y[i], label=str(SERIES_NUMBER),
                         **series_options[i].toDict())
