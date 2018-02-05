@@ -112,6 +112,10 @@ def plot_data(ax, x, y, options, series_options):
                 ax.plot(x[i], y[i], label=str(SERIES_NUMBER),
                         **series_options[i].toDict())
             else:
+                if 'markersize' in options.series_options[i].toDict():
+                    options.series_options[i].s = \
+                        options.series_options[i].markersize
+                    del options.series_options[i].markersize
                 ax.scatter(x[i], y[i], label=str(SERIES_NUMBER),
                            **series_options[i].toDict())
             SERIES_NUMBER += 1
