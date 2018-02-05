@@ -5,6 +5,7 @@ import numpy as np
 
 from copy import deepcopy
 from matplotlib.ticker import AutoMinorLocator
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, mark_inset
 from dotmap import DotMap
 
 SERIES_NUMBER = 0
@@ -52,6 +53,11 @@ default_options.text.options.ha = 'center'
 default_options.text.options.va = 'center'
 default_options.text.options.color = 'black'
 
+default_options.inset.options.location = 'lower right'
+default_options.inset.options.zoom_level = 1.5
+default_options.inset.options.border_color = 'black'
+default_options.inset.options.corners = [1, 3]
+default_options.inset.marker.options.color = 'gray'
 
 def merge_DotMap(a, b):
     for k, v in b.items():
@@ -335,6 +341,41 @@ def plot(x, y, my_options={}, y2=None):
         plot_ax(ax, x, y, y2, options)
 
     plt.tight_layout(pad=0)
+
+    if options.inset.show:
+        locations = {
+            'upper right': 1,
+            'upper left': 2,
+            'lower left': 3,
+            'lower right': 4,
+            'right': 5,
+            'center left': 6,
+            'center right': 7,
+            'lower center': 8,
+            'upper center': 9,
+            'center': 10,
+        }
+        ax_inset = zoomed_inset_axes(axes[0], options.inset.options.zoom_level,
+                                     loc=locations[
+                                         options.inset.options.location])
+        SERIES_NUMBER = 0
+        del options.x.label
+        del options.y.label
+        options.x.limits = options.inset.options.x.limits
+        options.y.limits = options.inset.options.y.limits
+        plot_ax(ax_inset, x, y, y2, options)
+        for sp in [ax_inset.axes.spines[i]
+                   for i in ['top', 'bottom', 'left', 'right']]:
+            sp.set_visible(True)
+            sp.set_color(options.inset.options.border_color)
+        plt.xticks(visible=False)
+        plt.yticks(visible=False)
+        plt.setp(ax_inset, xticks=[], yticks=[])
+        mark_inset(axes[0], ax_inset, loc1=options.inset.options.corners[0],
+                   loc2=options.inset.options.corners[1], fc="none",
+                   ec=options.inset.options.marker.options.color)
+
+        plt.draw()
 
     if options.x.axis.stretch:
         box = ax.get_position()
