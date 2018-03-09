@@ -3,12 +3,12 @@ from setuptools import setup
 setup(
     name='simpleplotlib',
     packages=['simpleplotlib'],
-    version='0.15',
+    version='0.16',
     description='A matplotlib wrapper focused on beauty and simplicity',
     author='Matthew K. Mukerjee',
     author_email='Matthew.Mukerjee@gmail.com',
     url='https://github.com/mukerjee/simpleplotlib',
-    download_url='https://github.com/mukerjee/simpleplotlib/tarball/0.15',
+    download_url='https://github.com/mukerjee/simpleplotlib/tarball/0.16',
     license='MIT License',
     keywords=['matplotlib', 'plots', 'beauty', 'simplicity'],
     classifiers=[
@@ -23,7 +23,7 @@ setup(
     ],
     install_requires=[
         'matplotlib>=2.0.0',
-        'numpy',
+        'numpy>=1.14.0',
         'dotmap',
     ]
 )
