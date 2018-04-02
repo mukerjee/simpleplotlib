@@ -465,17 +465,25 @@ def plot(x, y, my_options={}, y2=None):
             axes[0].axvline(l, **options.vertical_lines.options.toDict())
 
     if options.vertical_shaded.limits:
-        for l, r in options.vertical_shaded.limits:
-            axes[0].axvspan(l, r, **options.vertical_shaded.options.toDict())
+        for vs in options.vertical_shaded.limits:
+            l, r = vs[:2]
+            o = options.vertical_shaded.options.toDict()
+            if len(vs) > 2:
+                o = vs[2].toDict()
+            axes[0].axvspan(l, r, **o)
 
     if options.horizontal_lines.lines:
         for l in options.horizontal_lines.lines:
             axes[0].axhline(l, **options.horizontal_lines.options.toDict())
 
     if options.horizontal_shaded.limits:
-        for l, r in options.horizontal_shaded.limits:
-            axes[0].axhspan(l, r, **options.horizontal_shaded.options.toDict())
-            
+        for hs in options.horizontal_shaded.limits:
+            l, r = hs[:2]
+            o = options.horizontal_shaded.options.toDict()
+            if len(hs) > 2:
+                o = hs[2].toDict()
+            axes[0].axhspan(l, r, **o)
+
     for i in xrange(len(options.text.labels)):
         axes[-1].text(*options.text.positions[i], s=options.text.labels[i],
                       transform=axes[0].transAxes,
