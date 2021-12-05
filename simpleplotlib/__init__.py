@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import numpy as np
@@ -493,5 +495,5 @@ def plot(x, y, my_options={}, y2=None):
         axes[0].annotate('', xy=i[0], xytext=i[1], arrowprops=dict(
             arrowstyle='-', **options.annotation_lines.options.toDict()))
 
-    print options['output_fn']
+    print(options['output_fn'])
     plt.savefig(options['output_fn'], bbox_inches='tight', pad_inches=0)
